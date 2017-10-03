@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', type=int, default=-1)
     parser.add_argument('image', help="Path to image")
-    parser.add_argument('--label', type=int, default=0, help="Categories you want to visualize")
+    parser.add_argument('--label', type=int, default=0, help="Category you want to visualize")
     args = parser.parse_args()
 
     category_label = args.label
@@ -52,13 +52,13 @@ if __name__ == '__main__':
     pred.grad[0, top5[category_label]] = 1
 
     words = open('data/synset_words.txt').readlines()
-    words = [(w[0], ' '.join(w[1:])) for w in [w.split() for w in words]]
+    words = [''.join(w[1:]) for w in [w.split() for w in words]]
     words = np.asarray(words)
 
     probs = np.sort(probs)[::-1][:5]
     for w, p in zip(words[top5], probs):
-        print('{}\tprobability:{}'.format(w, p))
-    print("your choice ", words[top5[category_label]][1])
+        print('{}   prob:{}'.format(w, p))
+    print("your choice ", words[top5[category_label]])
     pred.backward(True)
 
     feature, grad = vgg.cam.data[0], vgg.cam.grad[0]
